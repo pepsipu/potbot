@@ -1,0 +1,6 @@
+{
+  "viewer": {
+    "enabled": false,
+    "port": 6969
+  }
+}
