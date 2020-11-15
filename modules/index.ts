@@ -1,4 +1,5 @@
 import { BotExtended } from './types';
 import { follow } from './follow';
+import { sprint } from './sprint';
 
-export { follow, BotExtended };
+export { follow, sprint, BotExtended };

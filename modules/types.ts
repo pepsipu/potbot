@@ -8,7 +8,6 @@ interface Follow {
     uuid: string,
     position: Vec3,
   }
-  goToEntity: (entity: Entity) => void
 }
 
 interface BotExtended extends Bot {

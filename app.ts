@@ -4,7 +4,7 @@ import {
   pathfinder, Pathfinder, goals, Movements,
 } from 'mineflayer-pathfinder';
 import mcData from 'minecraft-data';
-import { follow, BotExtended } from './modules';
+import { follow, sprint, BotExtended } from './modules';
 import _config from './config.json';
 
 const config = _config as BotConfig;
@@ -22,18 +22,15 @@ const bot: BotExtended = createBot({
   password: PASSWORD as string,
 }) as any;
 
-bot.loadPlugins([pathfinder, follow as any]);
+bot.loadPlugins([pathfinder, follow as any, sprint as any]);
 
 bot.once('spawn', () => {
   if (config.viewer.enabled) {
     viewer(bot, { port: config.viewer.port, firstPerson: true });
   }
   bot.movement = new Movements(bot, mcData(bot.version));
+  bot.movement.allowFreeMotion = true;
   bot.on('chat', (username, message) => {
-    if (message === 'betterFollow') {
-      bot.pathfinder.setMovements(bot.movement);
-      bot.pathfinder.setGoal(new goals.GoalFollow(bot.players[username].entity, 1));
-    }
   });
 });
 
