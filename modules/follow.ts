@@ -1,27 +1,25 @@
-import { Entity } from 'prismarine-entity';
 import { goals } from 'mineflayer-pathfinder';
-import { Vec3 } from 'vec3';
 import { BotExtended } from './types';
-
-const distanceToUpdate = 5;
 
 const follow = (bot: BotExtended) => {
   bot.follow = {
-    entity: {
-      uuid: '',
-      position: new Vec3(0, 0, 0),
+    uuid: '',
+    enabled: true,
+    follow: (entity: any) => {
+      bot.pathfinder.setMovements(bot.movement);
+      bot.pathfinder.setGoal(new goals.GoalFollow(entity, 2), true);
+      const doFollow = () => {
+        // @ts-ignore
+        bot.off('goal_reached', doFollow);
+        bot.follow.follow(entity);
+      };
+      // @ts-ignore
+      bot.on('goal_reached', doFollow);
+    },
+    pause: () => {
+      bot.pathfinder.setGoal(null as any);
     },
   };
-
-  bot.on('entityMoved', (entity: any) => {
-    if (entity.uuid === bot.follow.entity.uuid
-      && entity.position.distanceTo(bot.follow.entity.position) > distanceToUpdate) {
-      bot.follow.entity.position = entity.position.clone();
-      bot.pathfinder.setMovements(bot.movement);
-      bot.setControlState('sprint', true);
-      bot.pathfinder.setGoal(new goals.GoalFollow(entity, 1));
-    }
-  });
   bot.on('chat', (username, message) => {
     if (message === 'follow') {
       const { entity } = bot.players[username];
@@ -29,10 +27,10 @@ const follow = (bot: BotExtended) => {
         bot.chat('cant locate player');
         return;
       }
-      bot.follow.entity.uuid = (entity as any).uuid;
-      bot.follow.entity.position = entity.position.clone();
-      bot.pathfinder.setMovements(bot.movement);
-      bot.pathfinder.setGoal(new goals.GoalFollow(bot.players[username].entity, 1));
+      bot.follow.follow(entity);
+    }
+    if (message === 'unfollow') {
+      bot.follow.enabled = false;
     }
   });
 };

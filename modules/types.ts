@@ -1,16 +1,16 @@
 import { Bot } from 'mineflayer';
 import { Pathfinder } from 'mineflayer-pathfinder';
-import { Vec3 } from 'vec3';
-import { Entity } from 'prismarine-entity';
 
 interface Follow {
-  entity: {
-    uuid: string,
-    position: Vec3,
-  }
+  uuid: string,
+  enabled: boolean,
+  follow: (entity: any) => void,
+  pause: () => void,
 }
 
 interface BotExtended extends Bot {
+  data: any,
+  bloodhound: any,
   pathfinder: Pathfinder
   follow: Follow
   movement: any
